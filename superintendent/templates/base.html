@@ -1,0 +1,31 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+<body>
+<h1>SuperIntendent - promgram do obsługi żywienia zbiorowego</h1>
+<hr>
+
+
+
+{#        {% if user.is_authenticated %}#}
+{#            <h2>Witaj {{ user.username }}!</h2>#}
+{#            <small><a href="{% url 'logout' %}">Wyloguj się</a></small>#}
+{#        {% else %}#}
+{#            <small><a href="{% url 'login' %}">Zaloguj się</a></small>#}
+{#        {% endif %}#}
+{% block content %}
+{% endblock %}
+</body>
+<footer>
+    <hr>
+    <p>
+        <small>
+    <p align="right">Szkoła Podsatawowa im. Kubsuia Puchatka w Dalekim Lesie, kontakt: <a
+            href="mailto:misiu@lubimiodek.com.pl">misiu@lubimiodek.com.pl</a></p></small></p>
+</footer>
+</html>

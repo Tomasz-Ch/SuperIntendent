@@ -15,7 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
+
+from superintendent.views import StartView, MenuView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    url(r'^$', StartView.as_view(), name="index"),
+    path('jadlospis/', MenuView.as_view(), name="menu"),
 ]

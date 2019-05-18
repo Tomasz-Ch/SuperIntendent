@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <div class="container">
+        <button type="button" class="btn">Dane szkoły</button>
+        <button type="button" class="btn btn-default"><a href="/jadlospis/">Jadłopspisy</a></button>
+        <button type="button" class="btn btn-primary">Przyjęcie towaru</button>
+        <button type="button" class="btn btn-success">Wydanie towaru</button>
+        <button type="button" class="btn btn-info">Raport żywnościowy</button>
+        <button type="button" class="btn btn-warning">Inne</button>
+        <button type="button" class="btn btn-danger">Inne</button>
+        <button type="button" class="btn btn-link">Kontakt</button>
+    </div>
+    <ul>
+        {#            {%  for class_id, class_name in class_list %}#}
+        {#                <li><a href="{% url 'school-class' class_id %}">{{ class_name }}</a></li>#}
+        {#            {% endfor %}#}
+    </ul>
+{% endblock %}
