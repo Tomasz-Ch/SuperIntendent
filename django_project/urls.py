@@ -17,10 +17,12 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 
-from superintendent.views import StartView, MenuView
+from superintendent.views import StartView, NewMenuView, MenuView, SchoolUpdate
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', StartView.as_view(), name="index"),
-    path('jadlospis/', MenuView.as_view(), name="menu"),
+    path('new_menu/', NewMenuView.as_view(), name="new-menu"),
+    path('obiady/', MenuView.as_view(), name="obiady"),
+    path('szkola/<pk>', SchoolUpdate.as_view(), name="school"),
 ]

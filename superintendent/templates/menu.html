@@ -1,4 +1,14 @@
 {% extends 'base.html' %}
+
 {% block content %}
-   <h3>Jadłopspis</h3>
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+    <form method="get">
+    <h3>Jadłospis</h3>
+    <ul>
+        {% for obiad in menu %}
+            <li>{{ obiad.date }} - {{ obiad.name }}</li>
+        {% endfor %}
+    </ul>
+
+    </form>
 {% endblock %}

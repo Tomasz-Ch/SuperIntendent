@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+
+    <form action="{% url 'school' school.pk %}" method="post">
+
+    <h3>Zmień dane szkoły: </h3>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Zmodyfikuj"/>
+    </form>
+{% endblock %}
