@@ -3,8 +3,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import UpdateView
 
-from superintendent.forms import NewMenuForm, SchoolModelForm
-from .models import Menu, School
+from superintendent.forms import NewMenuForm, SchoolModelForm, AddProductFormModel
+from .models import Menu, School, Products
 
 
 class StartView(View):
@@ -54,3 +54,55 @@ class SchoolView(View):
         school = School.objects.get(pk=1)
         ctx = {"school": school}
         return render(request, "base.html", ctx)
+
+
+class AllProductsView(View):
+
+    def get(self, request):
+        prod_list = Products.objects.all().order_by('name')
+        ctx = {'prod_list': prod_list}
+        return render(request, "all_products.html", ctx)
+
+
+class AddProductView(View):
+    def get(self, request):
+        form = AddProductFormModel
+        ctx = {"form": form}
+        return render(request, "add_product.html", ctx)
+
+    def post(self, request):
+        form = AddProductFormModel(request.POST)
+        if form.is_valid():
+            # form valid start
+            name = form.cleaned_data['name']
+            unit = form.cleaned_data['unit']
+            calories = form.cleaned_data['calories']
+            protein = form.cleaned_data['protein']
+            fat = form.cleaned_data['fat']
+            carbo = form.cleaned_data['carbo']
+            calcium = form.cleaned_data['calcium']
+            iron = form.cleaned_data['iron']
+            vit_A = form.cleaned_data['vit_A']
+            vit_B1 = form.cleaned_data['vit_B1']
+            vit_B2 = form.cleaned_data['vit_B2']
+            vit_C = form.cleaned_data['vit_C']
+            group = form.cleaned_data['group']
+
+            new_product = Products(name=name,
+                                   unit=unit,
+                                   calories=calories,
+                                   protein=protein,
+                                   fat=fat,
+                                   carbo=carbo,
+                                   calcium=calcium,
+                                   iron=iron,
+                                   vit_A=vit_A,
+                                   vit_B1=vit_B1,
+                                   vit_B2=vit_B2,
+                                   vit_C=vit_C,
+                                   group=group)
+            new_product.save()
+            # form valid stop
+            return redirect('all-products')
+        # Wyświetl niepoprawny formularz z błędami
+        return render(request, 'add_product.html', {'form': form})

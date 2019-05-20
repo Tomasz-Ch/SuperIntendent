@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url
 
-from superintendent.views import StartView, NewMenuView, MenuView, SchoolUpdate
+from superintendent.views import StartView, NewMenuView, MenuView, SchoolUpdate, AllProductsView, AddProductView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,4 +25,6 @@ urlpatterns = [
     path('new_menu/', NewMenuView.as_view(), name="new-menu"),
     path('obiady/', MenuView.as_view(), name="obiady"),
     path('szkola/<pk>', SchoolUpdate.as_view(), name="school"),
+    url(r'^all_products/', AllProductsView.as_view(), name="all-products"),
+    url(r'^add_product/', AddProductView.as_view(), name="add-product"),
 ]
