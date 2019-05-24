@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+{#    <form action="{% url 'report' %}" method="post">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <input type="submit" value="Szukaj">#}
+{#    </form>#}
+
+
+    {% for x in result %}
+        <li>{{ x.name }} | </li>
+    {% endfor %}
+
+
+
+{% endblock %}

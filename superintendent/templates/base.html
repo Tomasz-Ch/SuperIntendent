@@ -10,14 +10,13 @@
 <h1>SuperIntendent - program do obsługi żywienia zbiorowego</h1>
 <hr>
 
+        {% if user.is_authenticated %}
+            <h2>Witaj {{ user.username }}!</h2>
+            <small><a href="{% url 'logout' %}">Wyloguj się</a></small>
+        {% else %}
+            <small><a href="{% url 'login' %}">Zaloguj się</a></small>
+        {% endif %}
 
-
-{#        {% if user.is_authenticated %}#}
-{#            <h2>Witaj {{ user.username }}!</h2>#}
-{#            <small><a href="{% url 'logout' %}">Wyloguj się</a></small>#}
-{#        {% else %}#}
-{#            <small><a href="{% url 'login' %}">Zaloguj się</a></small>#}
-{#        {% endif %}#}
 {% block content %}
 {% endblock %}
 </body>

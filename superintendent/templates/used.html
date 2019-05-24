@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+    <form method="post">
+    <h3>Wydano następujące produkty z magazynu: </h3>
+        <p>Data wydania: {{ form.operation_date }}</p>
+        <p>Typ operacji: {{ form.operation_type }}</p>
+        <p>Produkt: {{ form.product }}</p>
+        <p>Ilość: {{ form.quantity }}</p>
+        <p>Cena: {{ form.price }}</p>
+
+        {% csrf_token %}
+        <input type="submit" value="wyslij"/>
+    </form>
+{% endblock %}

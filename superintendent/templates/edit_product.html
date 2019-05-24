@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+    <h2>Edycja produktu</h2>
+    <form action="{% url 'edit-product' products.pk %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="button" value="Anuluj" onClick="history.back();"/>
+        <input type="submit" value="Zmień">
+    </form>
+
+
+{% endblock %}

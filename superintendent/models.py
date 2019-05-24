@@ -38,6 +38,7 @@ class School(models.Model):
 class Menu(models.Model):
     date = models.DateField(blank=False)
     name = models.CharField(max_length=255, null=False)
+    inventory = models.ManyToManyField('Inventory')
 
     # def __str__(self):
     #     return self.name
@@ -57,6 +58,9 @@ class Products(models.Model):
     vit_B2 = models.FloatField(null=True)
     vit_C = models.FloatField(null=True)
     group = models.IntegerField(choices=GROUPS, null=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Inventory(models.Model):

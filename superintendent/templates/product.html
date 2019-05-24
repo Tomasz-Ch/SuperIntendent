@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+    <h3>Nazwa produktu:</h3> {{ product.name }}
+
+
+
+    <h3>Wartości odżywcze:</h3>
+    <li><b>Liczba kalorii:</b> {{ product.calories }}</li>
+    <li><b>Wapń:</b> {{ product.calcium |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }}</li>
+
+    <a href="{% url 'edit-product' product.pk %}">Edycja</a>
+{% endblock %}

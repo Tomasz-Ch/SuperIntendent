@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+    <form action="{% url 'product-search' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Szukaj">
+    </form>
+
+    {% if product_result %}
+        <ul>
+            {% for product in product_result %}
+                <li><a href="{% url 'product-detail' product.pk %}">{{ product.name }} </a></li>
+            {% empty %}
+                <h2>Brak wyników :-(</h2>
+            {% endfor %}
+
+        </ul>
+    {% endif %}
+
+{% endblock %}

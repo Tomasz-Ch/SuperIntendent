@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
+
 {% block content %}
     <a href="/"><p align="right">powrót do strony głównej</p></a>
-    <h2>Dodaj produkt: </h2>
-    <form action="{% url 'add-product' %}" method="post">
+    <form method="post">
+    <h3>Formularz kontaktowy</h3>
+        <p>Wpisz wiadomość:</p>
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Add">
+        <input type="submit" value="wyslij"/>
     </form>
 {% endblock %}
