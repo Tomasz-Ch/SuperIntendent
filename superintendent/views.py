@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic import UpdateView
 
 from superintendent.forms import NewMenuForm, SchoolModelForm, AddProductFormModel, ProductModelForm, InvoiceModelForm, \
-    UsedForm, SearchProductForm, ContactForm
+    UsedForm, SearchProductForm, ContactForm, DateForm
 from .models import Menu, School, Products, Inventory
 
 
@@ -195,11 +195,13 @@ from decimal import Decimal
 
 class ReportView(View):
     def get(self, request):
+        print(request.GET)
+        start_date = request.GET.get('date_from', '2019-05-20')
+        end_date = request.GET.get('date_to', start_date)
+        print(start_date, end_date)
 
-        request_date = '2019-05-20'
-
-        product_id_list = [i.product_id for i in Inventory.objects.filter(operation_date__exact=request_date). \
-            filter(operation_type__exact=2).distinct()]
+        product_id_list = [i.product_id for i in Inventory.objects.filter(operation_date__gte=start_date). \
+            filter(operation_date__lte=end_date).filter(operation_type__exact=2).distinct()]
         product_id_set = set(product_id_list)
         products = Products.objects.filter(id__in=product_id_set)
 
@@ -214,16 +216,21 @@ class ReportView(View):
         sum_vit_B1 = 0
         sum_vit_B2 = 0
         sum_vit_C = 0
+        quant_total = 0
+        value_total = 0
         for product in products:
             product_id = product.id
             events = Inventory.objects.all().filter(operation_type__exact=2). \
-                filter(operation_date__exact=request_date).filter(product_id=product_id)
+                filter(operation_date__gte=start_date).filter(operation_date__lte=end_date). \
+                filter(product_id=product_id)
 
             value = Decimal(0)
             quant = Decimal(0)
             for e in events:
                 value = value + Decimal(e.quantity) * e.price
                 quant = quant + Decimal(e.quantity)
+                quant_total += e.quantity
+                value_total += Decimal(e.quantity) * e.price
                 sum_calories += e.quantity * Products.objects.get(id=e.product_id).calories * 1000 / 100
                 sum_proteins += e.quantity * Products.objects.get(pk=e.product_id).protein * 1000 / 100
                 sum_fat += e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100
@@ -260,7 +267,13 @@ class ReportView(View):
         vit_B1_real = int((sum_vit_B1 / vit_B1_norm) * 100)
         vit_B2_real = int((sum_vit_B2 / vit_B2_norm) * 100)
         vit_C_real = int((sum_vit_C / vit_C_norm) * 100)
+
+
+
+
         ctx = {"result": rv,
+               'quant_total': quant_total,
+               'value_total': value_total,
                'calories': sum_calories,
                'proteins': sum_proteins,
                'fat': sum_fat,
@@ -269,7 +282,7 @@ class ReportView(View):
                'iron': sum_iron,
                'vit_A': sum_vit_A,
                'vit_B1': sum_vit_B1,
-               'vit_B2': round(sum_vit_B2, 2),
+               'vit_B2': round(sum_vit_B2, 1),
                'vit_C': sum_vit_C,
                'cal_real': cal_real,
                'prot_real': prot_real,
@@ -283,17 +296,15 @@ class ReportView(View):
                'vit_C_real': vit_C_real}
         return render(request, "report.html", ctx)
 
-    # def post(self, request):
-    #     form = ReportForm(request.POST)
-    #     if form.is_valid():
-    #         operation_date = form.cleaned_data['name']
-    #         result = Products.objects.filter(name__icontains=operation_date)
-    #         empty_form = ReportForm()
-    #         ctx = {
-    #             "result": result,
-    #             'form': empty_form,
-    #         }
-    #     return render(request, "report.html", ctx)
+    def post(self, request):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['date_from']
+            end_date = form.cleaned_data['date_to']
+
+            return redirect(reverse_lazy('report') + '?' + f'date_from={start_date}&date_to={end_date}')
+        ctx = {'form': form}
+        return render(request, 'report.html', ctx)
 
 
 class LoginView(View):

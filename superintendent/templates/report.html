@@ -1,15 +1,20 @@
 {% extends 'base.html' %}
 {% block content %}
-{#    <form action="{% url 'report' %}" method="post">#}
-{#        {% csrf_token %}#}
-{#        {{ form.as_p }}#}
-{#        <input type="submit" value="Szukaj">#}
-{#    </form>#}
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+
+    <p>Wybierz okres dla raportu:</p>
+    <form action="{% url 'report' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Szukaj">
+    </form>
 
         <p>Produkt | Ilość | Wartość</p>
     {% for x in result %}
         <li>{{ x.product }} | {{ x.quant }} | {{ x.value }}</li>
     {% endfor %}
+
+    <p>Podsumowanie: {{ quant_total }} | {{ value_total }}</p>
 
     <p>Wartości odżywcze w posiłku:</p>
     <li>Kalorie: {{ calories }} kcal | Real zapotrz.: {{ cal_real }} %</li>

@@ -69,3 +69,5 @@ class Inventory(models.Model):
     quantity = models.FloatField(null=False)
     price = models.DecimalField(max_digits=6, decimal_places=2, null=False)
     product = models.ForeignKey(Products, on_delete=True)
+
+

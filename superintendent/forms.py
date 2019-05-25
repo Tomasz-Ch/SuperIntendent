@@ -57,3 +57,8 @@ class ContactForm(forms.Form):
     from_email = forms.EmailField(required=True)
     subject = forms.CharField(required=True)
     message = forms.CharField(widget=forms.Textarea, required=True)
+
+
+class DateForm(forms.Form):
+    date_from = forms.DateField(label="Okres od:")
+    date_to = forms.DateField(label="Okres do:", initial=datetime.now())
