@@ -190,12 +190,97 @@ class UsedView(View):
         return render(request, 'used.html', {'form': form})
 
 
+from decimal import Decimal
+
+
 class ReportView(View):
     def get(self, request):
-        name = Products.objects.filter(inventory__operation_type='2').distinct().filter(
-            inventory__operation_date='2019-05-20')
-        quant = Inventory.quantity
-        ctx = {"result": name, "quantity": quant}
+
+        request_date = '2019-05-20'
+
+        product_id_list = [i.product_id for i in Inventory.objects.filter(operation_date__exact=request_date). \
+            filter(operation_type__exact=2).distinct()]
+        product_id_set = set(product_id_list)
+        products = Products.objects.filter(id__in=product_id_set)
+
+        rv = []
+        sum_calories = 0
+        sum_proteins = 0
+        sum_fat = 0
+        sum_carbo = 0
+        sum_calcium = 0
+        sum_iron = 0
+        sum_vit_A = 0
+        sum_vit_B1 = 0
+        sum_vit_B2 = 0
+        sum_vit_C = 0
+        for product in products:
+            product_id = product.id
+            events = Inventory.objects.all().filter(operation_type__exact=2). \
+                filter(operation_date__exact=request_date).filter(product_id=product_id)
+
+            value = Decimal(0)
+            quant = Decimal(0)
+            for e in events:
+                value = value + Decimal(e.quantity) * e.price
+                quant = quant + Decimal(e.quantity)
+                sum_calories += e.quantity * Products.objects.get(id=e.product_id).calories * 1000 / 100
+                sum_proteins += e.quantity * Products.objects.get(pk=e.product_id).protein * 1000 / 100
+                sum_fat += e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100
+                sum_carbo += e.quantity * Products.objects.get(pk=e.product_id).carbo * 1000 / 100
+                sum_calcium += e.quantity * Products.objects.get(pk=e.product_id).calcium * 1000 / 100
+                sum_iron += e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100
+                sum_vit_A += e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100
+                sum_vit_B1 += e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100
+                sum_vit_B2 += e.quantity * Products.objects.get(pk=e.product_id).vit_B2 * 1000 / 100
+                sum_vit_C += e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100
+            rv.append({
+                "value": value,
+                "product": product,
+                "quant": quant,
+            })
+
+        cal_norm = 900
+        prot_norm = 28
+        fat_norm = 27
+        carbo_norm = 139
+        calcium_norm = 0.3
+        iron_norm = 4.3
+        vit_A_norm = 1520
+        vit_B1_norm = 0.5
+        vit_B2_norm = 0.6
+        vit_C_norm = 26
+        cal_real = int((sum_calories / cal_norm) * 100)
+        prot_real = int((sum_proteins / prot_norm) * 100)
+        fat_real = int((sum_fat / fat_norm) * 100)
+        carbo_real = int((sum_carbo / carbo_norm) * 100)
+        calcium_real = int((sum_calcium / calcium_norm) * 100)
+        iron_real = int((sum_iron / iron_norm) * 100)
+        vit_A_real = int((sum_vit_A / vit_A_norm) * 100)
+        vit_B1_real = int((sum_vit_B1 / vit_B1_norm) * 100)
+        vit_B2_real = int((sum_vit_B2 / vit_B2_norm) * 100)
+        vit_C_real = int((sum_vit_C / vit_C_norm) * 100)
+        ctx = {"result": rv,
+               'calories': sum_calories,
+               'proteins': sum_proteins,
+               'fat': sum_fat,
+               'carbo': sum_carbo,
+               'calcium': sum_calcium,
+               'iron': sum_iron,
+               'vit_A': sum_vit_A,
+               'vit_B1': sum_vit_B1,
+               'vit_B2': round(sum_vit_B2, 2),
+               'vit_C': sum_vit_C,
+               'cal_real': cal_real,
+               'prot_real': prot_real,
+               'fat_real': fat_real,
+               'carbo_real': carbo_real,
+               'calcium_real': calcium_real,
+               'iron_real': iron_real,
+               'vit_A_real': vit_A_real,
+               'vit_B1_real': vit_B1_real,
+               'vit_B2_real': vit_B2_real,
+               'vit_C_real': vit_C_real}
         return render(request, "report.html", ctx)
 
     # def post(self, request):

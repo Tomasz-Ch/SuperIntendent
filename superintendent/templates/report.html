@@ -6,11 +6,20 @@
 {#        <input type="submit" value="Szukaj">#}
 {#    </form>#}
 
-
+        <p>Produkt | Ilość | Wartość</p>
     {% for x in result %}
-        <li>{{ x.name }} | </li>
+        <li>{{ x.product }} | {{ x.quant }} | {{ x.value }}</li>
     {% endfor %}
 
-
+    <p>Wartości odżywcze w posiłku:</p>
+    <li>Kalorie: {{ calories }} kcal | Real zapotrz.: {{ cal_real }} %</li>
+    <li>Białko: {{ proteins }} g  |  Real zapotrz.: {{ prot_real }} %</li>
+    <li>Węglowodany: {{ carbo }} g  |  Real zapotrz.: {{ carbo_real }} %</li>
+    <li>Wapń: {{ calcium }} g  |  Real zapotrz.: {{ calcium_real }} %</li>
+    <li>Żelazo: {{ iron }} g  |  Real zapotrz.: {{ iron_real }} %</li>
+    <li>Witamina A: {{ vit_A }} g  |  Real zapotrz.: {{ vit_A_real }} %</li>
+    <li>Witamina B1: {{ vit_B1 }} g  |  Real zapotrz.: {{ vit_B1_real }} %</li>
+    <li>Witamina B2: {{ vit_B2 }} g  |  Real zapotrz.: {{ vit_B2_real }} %</li>
+    <li>Witamina C: {{ vit_C }} g  |  Real zapotrz.: {{ vit_C_real }} %</li>
 
 {% endblock %}
