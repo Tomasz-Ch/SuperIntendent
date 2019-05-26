@@ -11,7 +11,7 @@ from django.views.generic import UpdateView
 
 from superintendent.forms import NewMenuForm, SchoolModelForm, AddProductFormModel, ProductModelForm, InvoiceModelForm, \
     UsedForm, SearchProductForm, ContactForm, DateForm
-from .models import Menu, School, Products, Inventory
+from .models import Menu, School, Products, Inventory, MealNumber
 
 
 class StartView(View):
@@ -205,6 +205,13 @@ class ReportView(View):
         product_id_set = set(product_id_list)
         products = Products.objects.filter(id__in=product_id_set)
 
+        meals = MealNumber.objects.all().filter(meal_date__gte=start_date).\
+            filter(meal_date__lte=end_date)
+        meal_num = 0
+        for m in meals:
+            meal_num += m.meal_number
+
+
         rv = []
         sum_calories = 0
         sum_proteins = 0
@@ -218,6 +225,7 @@ class ReportView(View):
         sum_vit_C = 0
         quant_total = 0
         value_total = 0
+
         for product in products:
             product_id = product.id
             events = Inventory.objects.all().filter(operation_type__exact=2). \
@@ -226,21 +234,22 @@ class ReportView(View):
 
             value = Decimal(0)
             quant = Decimal(0)
+
             for e in events:
                 value = value + Decimal(e.quantity) * e.price
                 quant = quant + Decimal(e.quantity)
                 quant_total += e.quantity
                 value_total += Decimal(e.quantity) * e.price
-                sum_calories += e.quantity * Products.objects.get(id=e.product_id).calories * 1000 / 100
-                sum_proteins += e.quantity * Products.objects.get(pk=e.product_id).protein * 1000 / 100
-                sum_fat += e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100
-                sum_carbo += e.quantity * Products.objects.get(pk=e.product_id).carbo * 1000 / 100
-                sum_calcium += e.quantity * Products.objects.get(pk=e.product_id).calcium * 1000 / 100
-                sum_iron += e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100
-                sum_vit_A += e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100
-                sum_vit_B1 += e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100
-                sum_vit_B2 += e.quantity * Products.objects.get(pk=e.product_id).vit_B2 * 1000 / 100
-                sum_vit_C += e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100
+                sum_calories += e.quantity * int(Products.objects.get(id=e.product_id).calories * 1000 / 100 / meal_num)
+                sum_proteins += e.quantity * Products.objects.get(pk=e.product_id).protein * 1000 / 100 / meal_num
+                sum_fat += e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100 / meal_num
+                sum_carbo += e.quantity * Products.objects.get(pk=e.product_id).carbo * 1000 / 100 / meal_num
+                sum_calcium += e.quantity * Products.objects.get(pk=e.product_id).calcium * 1000 / 100 / meal_num
+                sum_iron += e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100 / meal_num
+                sum_vit_A += e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100 / meal_num
+                sum_vit_B1 += e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100 / meal_num
+                sum_vit_B2 += e.quantity * Products.objects.get(pk=e.product_id).vit_B2 * 1000 / 100 / meal_num
+                sum_vit_C += e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100 / meal_num
             rv.append({
                 "value": value,
                 "product": product,
@@ -267,9 +276,6 @@ class ReportView(View):
         vit_B1_real = int((sum_vit_B1 / vit_B1_norm) * 100)
         vit_B2_real = int((sum_vit_B2 / vit_B2_norm) * 100)
         vit_C_real = int((sum_vit_C / vit_C_norm) * 100)
-
-
-
 
         ctx = {"result": rv,
                'quant_total': quant_total,
@@ -407,3 +413,84 @@ def emailView(request):
 
 def successView(request):
     return HttpResponse('Success! Thank you for your message.')
+
+
+class InvReportView(View):
+    def get(self, request):
+        print(request.GET)
+        start_date = request.GET.get('date_from', '2019-05-20')
+        end_date = request.GET.get('date_to', start_date)
+        print(start_date, end_date)
+
+        product_id_list = [i.product_id for i in Inventory.objects.filter(operation_date__gte=start_date). \
+            filter(operation_date__lte=end_date).filter(operation_type__exact=2).distinct()]
+        product_id_set = set(product_id_list)
+        products = Products.objects.filter(id__in=product_id_set)
+
+        rv = []
+
+        quant_total_in = 0
+        value_total_in = 0
+        quant_total_out = 0
+        value_total_out = 0
+        for product in products:
+            product_id = product.id
+            events_out = Inventory.objects.all().filter(operation_type__exact=2). \
+                filter(operation_date__gte=start_date).filter(operation_date__lte=end_date). \
+                filter(product_id=product_id)
+            events_in = Inventory.objects.all().filter(operation_type__exact=1). \
+                filter(operation_date__gte=start_date).filter(operation_date__lte=end_date). \
+                filter(product_id=product_id)
+
+            value_in = Decimal(0)
+            quant_in = Decimal(0)
+            for e in events_in:
+                value_in = value_in + Decimal(e.quantity) * e.price
+                quant_in = quant_in + Decimal(e.quantity)
+                quant_total_in += e.quantity
+                value_total_in += Decimal(e.quantity) * e.price
+
+            value_out = Decimal(0)
+            quant_out = Decimal(0)
+            for e in events_out:
+                value_out = value_out + Decimal(e.quantity) * e.price
+                quant_out = quant_out + Decimal(e.quantity)
+                quant_total_out += e.quantity
+                value_total_out += Decimal(e.quantity) * e.price
+
+            quant_saldo = quant_in - quant_out
+            value_saldo = value_in - value_out
+            quant_total_saldo = quant_total_in - quant_total_out
+            value_total_saldo = value_total_in - value_total_out
+
+
+            rv.append({
+                "quant_in": quant_in,
+                "value_in": value_in,
+                "quant_out": quant_out,
+                "value_out": value_out,
+                "product": product,
+                "quant_saldo": quant_saldo,
+                "value_saldo": value_saldo
+            })
+
+        ctx = {"result": rv,
+               'quant_total_in': quant_total_in,
+               'value_total_in': value_total_in,
+               'quant_total_out': quant_total_out,
+               'value_total_out': value_total_out,
+               'quant_total_saldo': quant_total_saldo,
+               'value_total_saldo': value_total_saldo,
+               }
+
+        return render(request, "inv_report.html", ctx)
+
+    def post(self, request):
+        form = DateForm(request.POST)
+        if form.is_valid():
+            start_date = form.cleaned_data['date_from']
+            end_date = form.cleaned_data['date_to']
+
+            return redirect(reverse_lazy('inv-report') + '?' + f'date_from={start_date}&date_to={end_date}')
+        ctx = {'form': form}
+        return render(request, 'inv_report.html', ctx)

@@ -20,7 +20,7 @@ from django.contrib.auth import views as auth_views
 
 from superintendent.views import StartView, NewMenuView, MenuView, SchoolUpdate, AllProductsView, AddProductView, \
     ModifyProductUpdate, ProductView, InvoiceView, UsedView, ReportView, LoginView, SearchProductView, AddUserView, \
-    ListUsersView, ResetPasswordView, emailView, successView
+    ListUsersView, ResetPasswordView, emailView, successView, InvReportView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^invoice/', InvoiceView.as_view(), name="invoice"),
     url(r'^used/', UsedView.as_view(), name="used"),
     url(r'^report/', ReportView.as_view(), name="report"),
+    url(r'^inv_report/', InvReportView.as_view(), name="inv-report"),
     url(r'login/', LoginView.as_view(), name='login'),
     url(r'logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('product_search/', SearchProductView.as_view(), name="product-search"),

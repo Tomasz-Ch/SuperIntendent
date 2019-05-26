@@ -71,3 +71,6 @@ class Inventory(models.Model):
     product = models.ForeignKey(Products, on_delete=True)
 
 
+class MealNumber(models.Model):
+    meal_date = models.DateField(blank=False)
+    meal_number = models.IntegerField(null=False)
