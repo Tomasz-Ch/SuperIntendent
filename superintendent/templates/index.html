@@ -2,17 +2,29 @@
 {% block content %}
 
     <div class="container">
-        <button type="button" class="btn"><a href="/szkola/1">Dane szkoły</a></button>
-        <button type="button" class="btn btn-warning"><a href="all_products">Produkty</a></button>
-        <button type="button" class="btn btn-default"><a href="/new_menu/">Nowy obiad</a></button>
-        <button type="button" class="btn btn-primary"><a href="invoice">Przyjęcie towaru</a></button>
-        <button type="button" class="btn btn-success"><a href="used">Wydanie towaru</a></button>
-        <button type="button" class="btn btn-info"><a href="report">Raport żywnościowy</a></button>
-        <button type="button" class="btn btn-info"><a href="inv_report">Stan magazynowy</a></button>
-        <button type="button" class="btn btn-danger"><a href="product_search">Wyszukaj produkt</a></button>
-        <button type="button" class="btn btn-danger"><a href="add_user">Dodaj użytkownika</a></button>
-        <button type="button" class="btn btn-danger"><a href="list_users">Użytkownicy</a></button>
-        <button type="button" class="btn btn-link"><a href="email">Kontakt</a></button>
+
+
+        <a href="/szkola/1" class="btn btn-secondary" tabindex="-1" role="button" aria-disabled="true">Dane
+            Szkoły</a>
+        <a href="/new_menu/" class="btn btn-default" tabindex="-1" role="button" aria-disabled="true">Nowy
+            obiad</a>
+        <a href="/meal_number/" class="btn btn-default" tabindex="-1" role="button" aria-disabled="true">Liczba
+            posiłków</a>
+        <a href="invoice" class="btn btn-primary" tabindex="-1" role="button" aria-disabled="true">Przyjęcie
+            towaru</a>
+        <a href="used" class="btn btn-success" tabindex="-1" role="button" aria-disabled="true">Wydanie
+            towaru</a>
+        <a href="report" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Raport
+            żywnościowy</a>
+        <a href="inv_report" class="btn btn-info" tabindex="-1" role="button" aria-disabled="true">Stan
+            magazynowy</a>
+        <a href="product_search" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">Wyszukaj
+            produkt</a>
+        <a href="add_user" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">Dodaj
+            użytkownika</a>
+        <a href="list_users" class="btn btn-danger" tabindex="-1" role="button" aria-disabled="true">Kontakt</a>
+
+
     </div>
 
 {% endblock %}

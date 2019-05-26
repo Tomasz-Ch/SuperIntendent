@@ -15,7 +15,7 @@ class SchoolModelForm(forms.ModelForm):
 
 class NewMenuForm(forms.Form):
     date = forms.DateField(label="Data obiadu", initial=datetime.now())
-    name = forms.CharField(widget=forms.Textarea)
+    name = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'cols': 85}))
 
 
 class AddProductFormModel(forms.ModelForm):
@@ -62,3 +62,8 @@ class ContactForm(forms.Form):
 class DateForm(forms.Form):
     date_from = forms.DateField(label="Okres od:")
     date_to = forms.DateField(label="Okres do:", initial=datetime.now())
+
+
+class MealNumberForm(forms.Form):
+    meal_date = forms.DateField(label="Data obiadu")
+    meal_number = forms.IntegerField(label="Liczba posiłków")

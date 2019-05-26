@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import LogoutView
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -10,7 +11,7 @@ from django.views import View
 from django.views.generic import UpdateView
 
 from superintendent.forms import NewMenuForm, SchoolModelForm, AddProductFormModel, ProductModelForm, InvoiceModelForm, \
-    UsedForm, SearchProductForm, ContactForm, DateForm
+    UsedForm, SearchProductForm, ContactForm, DateForm, MealNumberForm
 from .models import Menu, School, Products, Inventory, MealNumber
 
 
@@ -196,7 +197,8 @@ from decimal import Decimal
 class ReportView(View):
     def get(self, request):
         print(request.GET)
-        start_date = request.GET.get('date_from', '2019-05-20')
+        # nastyhack
+        start_date = request.GET.get('date_from', '2100-05-20')
         end_date = request.GET.get('date_to', start_date)
         print(start_date, end_date)
 
@@ -205,12 +207,11 @@ class ReportView(View):
         product_id_set = set(product_id_list)
         products = Products.objects.filter(id__in=product_id_set)
 
-        meals = MealNumber.objects.all().filter(meal_date__gte=start_date).\
+        meals = MealNumber.objects.all().filter(meal_date__gte=start_date). \
             filter(meal_date__lte=end_date)
         meal_num = 0
         for m in meals:
             meal_num += m.meal_number
-
 
         rv = []
         sum_calories = 0
@@ -278,6 +279,7 @@ class ReportView(View):
         vit_C_real = int((sum_vit_C / vit_C_norm) * 100)
 
         ctx = {"result": rv,
+               'form': DateForm,
                'quant_total': quant_total,
                'value_total': value_total,
                'calories': sum_calories,
@@ -332,11 +334,8 @@ class LoginView(View):
         return render(request, 'login.html', ctx)
 
 
-class LogoutView(View):
-    def get(self, request):
-        logout(request)
-        return redirect('index')
-
+class MyLogoutView(LogoutView):
+    next_page = reverse_lazy('index')
 
 class SearchProductView(View):
     def get(self, request):
@@ -463,7 +462,6 @@ class InvReportView(View):
             quant_total_saldo = quant_total_in - quant_total_out
             value_total_saldo = value_total_in - value_total_out
 
-
             rv.append({
                 "quant_in": quant_in,
                 "value_in": value_in,
@@ -494,3 +492,23 @@ class InvReportView(View):
             return redirect(reverse_lazy('inv-report') + '?' + f'date_from={start_date}&date_to={end_date}')
         ctx = {'form': form}
         return render(request, 'inv_report.html', ctx)
+
+
+class MealNumberView(View):
+
+    def get(self, request):
+        form = MealNumberForm()
+        ctx = {"form": form}
+        return render(request, "meal_number.html", ctx)
+
+    def post(self, request):
+        form = MealNumberForm(request.POST)
+        if form.is_valid():
+            meal_date = form.cleaned_data['meal_date']
+            meal_number = form.cleaned_data['meal_number']
+            new_meal = MealNumber(meal_date=meal_date,
+                                  meal_number=meal_number)
+            new_meal.save()
+
+            return redirect('used')
+        return render(request, 'meal_number.html', {'form': form})

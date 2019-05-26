@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <a href="/"><p align="right">powrót do strony głównej</p></a>
+    <form method="post">
+    <h3>Posiłki: </h3>
+        <p>Data posiłku: {{ form.meal_date }}</p>
+        <p>Liczba posiłków: {{ form.meal_number }}</p>
+
+        {% csrf_token %}
+        <input type="submit" value="wyslij"/>
+    </form>
+{% endblock %}

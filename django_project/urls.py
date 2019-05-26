@@ -20,12 +20,13 @@ from django.contrib.auth import views as auth_views
 
 from superintendent.views import StartView, NewMenuView, MenuView, SchoolUpdate, AllProductsView, AddProductView, \
     ModifyProductUpdate, ProductView, InvoiceView, UsedView, ReportView, LoginView, SearchProductView, AddUserView, \
-    ListUsersView, ResetPasswordView, emailView, successView, InvReportView
+    ListUsersView, ResetPasswordView, emailView, successView, InvReportView, MealNumberView, MyLogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', StartView.as_view(), name="index"),
     path('new_menu/', NewMenuView.as_view(), name="new-menu"),
+    path('meal_number/', MealNumberView.as_view(), name="meal-number"),
     path('obiady/', MenuView.as_view(), name="obiady"),
     path('szkola/<pk>', SchoolUpdate.as_view(), name="school"),
     url(r'^all_products/', AllProductsView.as_view(), name="all-products"),
@@ -37,7 +38,7 @@ urlpatterns = [
     url(r'^report/', ReportView.as_view(), name="report"),
     url(r'^inv_report/', InvReportView.as_view(), name="inv-report"),
     url(r'login/', LoginView.as_view(), name='login'),
-    url(r'logout/', auth_views.LogoutView.as_view(), name='logout'),
+    url(r'logout/', MyLogoutView.as_view(), name='logout'),
     path('product_search/', SearchProductView.as_view(), name="product-search"),
     url(r'add_user/', AddUserView.as_view(), name='add-user'),
     url(r'list_users/', ListUsersView.as_view(), name='list-users'),

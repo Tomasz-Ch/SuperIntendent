@@ -72,5 +72,5 @@ class Inventory(models.Model):
 
 
 class MealNumber(models.Model):
-    meal_date = models.DateField(blank=False)
+    meal_date = models.DateField(null=False, unique=True)
     meal_number = models.IntegerField(null=False)
