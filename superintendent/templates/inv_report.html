@@ -4,16 +4,42 @@
 
     <p>Wybierz okres dla raportu:</p>
     <form action="{% url 'inv-report' %}" method="post">
-        {% csrf_token %}
+
         {{ form.as_p }}
+        {% csrf_token %}
         <input type="submit" value="Szukaj">
     </form>
-    <table>
-    <tr><th>Produkt</th>  <th>Ilość przyjęta</th> <th>Wartość przyjęta </th> <th>Ilość wydana </th> <th>Wartość wydana</th> <th>Stan ilościowy</th><th>Stan wartościowy</th></tr>
-    {% for x in result %}
-        <tr><td>{{ x.product }}</td> <td>{{ x.quant_in }} </td> <td>{{ x.value_in }} </td><td>{{ x.quant_out }}</td> <td> {{ x.value_out }}</td><td>{{ x.quant_saldo }}</td><td>{{ x.value_saldo }}</td></tr>
-    {% endfor %}
-    <tr><td>Podsumowanie</td> <td>{{ quant_total_in }}</td>  <td>{{ value_total_in }}</td>   <td>{{ quant_total_out }}</td> <td>{{ value_total_out }}</td><td>{{ quant_total_saldo }}</td><td>{{ value_total_saldo }}</td></tr>
+
+    <table border="1">
+        <tr>
+            <th>Produkt</th>
+            <th>Ilość przyjęta</th>
+            <th>Wartość przyjęta</th>
+            <th>Ilość wydana</th>
+            <th>Wartość wydana</th>
+            <th>Stan ilościowy</th>
+            <th>Stan wartościowy</th>
+        </tr>
+        {% for x in result %}
+            <tr>
+                <td><p align="left">{{ x.product }}</p></td>
+                <td><p align="center">{{ x.quant_in }} </p></td>
+                <td><p align="center">{{ x.value_in }} </p></td>
+                <td><p align="center">{{ x.quant_out }}</p></td>
+                <td><p align="center"> {{ x.value_out }}</p></td>
+                <td><p align="center">{{ x.quant_saldo }}</p></td>
+                <td><p align="center">{{ x.value_saldo }}</p></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>Razem</th>
+            <th>{{ quant_total_in }}</th>
+            <th>{{ value_total_in }}</th>
+            <th>{{ quant_total_out }}</th>
+            <th>{{ value_total_out }}</th>
+            <th>{{ quant_total_saldo }}</th>
+            <th>{{ value_total_saldo }}</th>
+        </tr>
     </table>
 
 

@@ -30,11 +30,12 @@ class ProductModelForm(forms.ModelForm):
         fields = '__all__'
 
 
-class InvoiceModelForm(forms.ModelForm):
-    class Meta:
-        model = Inventory
-        fields = '__all__'
-        # exclude = ['product']
+class InvoiceForm(forms.Form):
+    operation_date = forms.DateField(label="Data przyjęcia", initial=datetime.now())
+    operation_type = forms.IntegerField(widget=forms.Select(choices=TYPES), initial=TYPES[0])
+    quantity = forms.FloatField()
+    price = forms.DecimalField()
+    product = forms.ModelChoiceField(queryset=Products.objects.all())
 
 
 class UsedForm(forms.Form):
@@ -54,9 +55,9 @@ class SearchProductForm(forms.Form):
 
 
 class ContactForm(forms.Form):
-    from_email = forms.EmailField(required=True)
-    subject = forms.CharField(required=True)
-    message = forms.CharField(widget=forms.Textarea, required=True)
+    from_email = forms.EmailField(label="E-mail", required=True)
+    subject = forms.CharField(label="Temat wiadomości", required=True)
+    message = forms.CharField(label="Treść wiadomości", widget=forms.Textarea, required=True)
 
 
 class DateForm(forms.Form):

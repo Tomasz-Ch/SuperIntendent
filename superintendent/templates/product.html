@@ -2,13 +2,24 @@
 
 {% block content %}
     <a href="/"><p align="right">powrót do strony głównej</p></a>
-    <h3>Nazwa produktu:</h3> {{ product.name }}
+    <h4>Nazwa produktu:</h4> <h1><p align="center">{{ product.name }}</p></h1>
 
+    <li><b>Jednostka miary:</b> {{ product.unit |default:"Brak jednostki miary (edytuj produkt, aby dopisać wartość)" }}</li><br/>
 
+    <h4>Wartości odżywcze (w 100g):</h4><br/>
+    <li><b>Liczba kalorii:</b> {{ product.calories |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }}
+    </li>
+    <li><b>Białko:</b> {{ product.protein |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} g</li>
+    <li><b>Tłuszcze ogółem:</b> {{ product.fat |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} g</li>
+    <li><b>Węglowodany:</b> {{ product.carbo |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} g</li>
+    <li><b>Wapń:</b> {{ product.calcium |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} mg</li>
+    <li><b>Żelazo:</b> {{ product.iron |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} mg</li>
+    <li><b>Wiamina A:</b> {{ product.vit_A |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} j.m.</li>
+    <li><b>Witamina B1:</b> {{ product.vit_B1 |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} mg</li>
+    <li><b>Witamina B2:</b> {{ product.vit_B2 |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} mg</li>
+    <li><b>Witamina C:</b> {{ product.vit_C |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }} mg</li>
+    <li><b>Grupa produktowa:</b> {{ product.group |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }}</li>
 
-    <h3>Wartości odżywcze:</h3>
-    <li><b>Liczba kalorii:</b> {{ product.calories }}</li>
-    <li><b>Wapń:</b> {{ product.calcium |default:"Brak wartości (edytuj produkt, aby dopisać wartość)" }}</li>
 
     <a href="{% url 'edit-product' product.pk %}">Edycja</a>
 {% endblock %}

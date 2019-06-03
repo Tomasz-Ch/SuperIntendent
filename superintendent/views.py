@@ -10,8 +10,8 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import UpdateView
 
-from superintendent.forms import NewMenuForm, SchoolModelForm, AddProductFormModel, ProductModelForm, InvoiceModelForm, \
-    UsedForm, SearchProductForm, ContactForm, DateForm, MealNumberForm
+from superintendent.forms import NewMenuForm, SchoolModelForm, AddProductFormModel, ProductModelForm, \
+    UsedForm, SearchProductForm, ContactForm, DateForm, MealNumberForm, InvoiceForm
 from .models import Menu, School, Products, Inventory, MealNumber
 
 
@@ -137,12 +137,12 @@ class ProductView(View):
 
 class InvoiceView(View):
     def get(self, request):
-        form = InvoiceModelForm
+        form = InvoiceForm()
         ctx = {"form": form}
         return render(request, "invoice.html", ctx)
 
     def post(self, request):
-        form = InvoiceModelForm(request.POST)
+        form = InvoiceForm(request.POST)
         if form.is_valid():
             # form valid start
             operation_date = form.cleaned_data['operation_date']
@@ -196,11 +196,11 @@ from decimal import Decimal
 
 class ReportView(View):
     def get(self, request):
-        print(request.GET)
+        # print(request.GET)
         # nastyhack
         start_date = request.GET.get('date_from', '2100-05-20')
         end_date = request.GET.get('date_to', start_date)
-        print(start_date, end_date)
+        # print(start_date, end_date)
 
         product_id_list = [i.product_id for i in Inventory.objects.filter(operation_date__gte=start_date). \
             filter(operation_date__lte=end_date).filter(operation_type__exact=2).distinct()]
@@ -337,6 +337,7 @@ class LoginView(View):
 class MyLogoutView(LogoutView):
     next_page = reverse_lazy('index')
 
+
 class SearchProductView(View):
     def get(self, request):
         form = SearchProductForm()
@@ -416,10 +417,10 @@ def successView(request):
 
 class InvReportView(View):
     def get(self, request):
-        print(request.GET)
+        # print(request.GET)
         start_date = request.GET.get('date_from', '2019-05-20')
         end_date = request.GET.get('date_to', start_date)
-        print(start_date, end_date)
+        # print(start_date, end_date)
 
         product_id_list = [i.product_id for i in Inventory.objects.filter(operation_date__gte=start_date). \
             filter(operation_date__lte=end_date).filter(operation_type__exact=2).distinct()]

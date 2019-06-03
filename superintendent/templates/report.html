@@ -18,14 +18,17 @@
     <p>Podsumowanie: {{ quant_total }} | {{ value_total }}</p>
 
     <p>Wartości odżywcze w posiłku:</p>
-    <li>Kalorie: {{ calories }} kcal | Real zapotrz.: {{ cal_real }} %</li>
-    <li>Białko: {{ proteins }} g | Real zapotrz.: {{ prot_real }} %</li>
-    <li>Węglowodany: {{ carbo }} g | Real zapotrz.: {{ carbo_real }} %</li>
-    <li>Wapń: {{ calcium }} g | Real zapotrz.: {{ calcium_real }} %</li>
-    <li>Żelazo: {{ iron }} g | Real zapotrz.: {{ iron_real }} %</li>
-    <li>Witamina A: {{ vit_A }} g | Real zapotrz.: {{ vit_A_real }} %</li>
-    <li>Witamina B1: {{ vit_B1 }} g | Real zapotrz.: {{ vit_B1_real }} %</li>
-    <li>Witamina B2: {{ vit_B2 }} g | Real zapotrz.: {{ vit_B2_real }} %</li>
-    <li>Witamina C: {{ vit_C }} g | Real zapotrz.: {{ vit_C_real }} %</li>
+    <ul>
+        <li><b>Kalorie:</b> {{ calories }} kcal | Real zapotrz.: <b>{{ cal_real }} %</b></li>
+        <li><b>Białko:</b> {{ proteins }} g | Real zapotrz.: <b>{{ prot_real }} %</b></li>
+        <li><b>Węglowodany:</b> {{ carbo }} g | Real zapotrz.: <b>{{ carbo_real }} %</b></li>
+        <li><b>Wapń:</b> {{ calcium }} mg | Real zapotrz.: <b>{{ calcium_real }} %</b></li>
+        <li><b>Żelazo:</b> {{ iron }} mg | Real zapotrz.: <b>{{ iron_real }} %</b></li>
+        <li><b>Witamina A:</b> {{ vit_A }} j.m. | Real zapotrz.: <b>{{ vit_A_real }} %</b></li>
+        <li><b>Witamina B1:</b> {{ vit_B1 }} mg | Real zapotrz.: <b>{{ vit_B1_real }} %</b></li>
+        <li><b>Witamina B2:</b> {{ vit_B2 }} mg | Real zapotrz.: <b>{{ vit_B2_real }} %</b></li>
+        <li><b>Witamina C:</b> {{ vit_C }} mg | Real zapotrz.: <b>{{ vit_C_real }} %</b></li>
+    </ul>
+
 
 {% endblock %}
