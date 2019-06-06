@@ -20,7 +20,8 @@ from django.contrib.auth import views as auth_views
 
 from superintendent.views import StartView, NewMenuView, MenuView, SchoolUpdate, AllProductsView, AddProductView, \
     ModifyProductUpdate, ProductView, InvoiceView, UsedView, ReportView, LoginView, SearchProductView, AddUserView, \
-    ListUsersView, ResetPasswordView, emailView, successView, InvReportView, MealNumberView, MyLogoutView
+    ListUsersView, ResetPasswordView, emailView, successView, InvReportView, MealNumberView, MyLogoutView, \
+    DeleteProductView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,4 +50,5 @@ urlpatterns = [
         name='password_reset_confirm'),
     path('email/', emailView, name='email'),
     path('success/', successView, name='success'),
+    url(r'^delete_product/(?P<product_id>(\d)+)', DeleteProductView.as_view(), name="delete-product"),
 ]

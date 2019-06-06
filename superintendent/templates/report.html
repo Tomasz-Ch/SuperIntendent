@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <a href="/"><p align="right">powrót do strony głównej</p></a>
-
+    <h1><p align="center">Raport żywnościowy / realizacja normy wartości odżywczych</p></h1>
     <p>Wybierz okres dla raportu:</p>
     <form action="{% url 'report' %}" method="post">
 
@@ -10,17 +10,33 @@
         <input type="submit" value="Szukaj">
     </form>
 
-    <p>Produkt | Ilość | Wartość</p>
-    {% for x in result %}
-        <li>{{ x.product }} | {{ x.quant }} | {{ x.value }}</li>
-    {% endfor %}
+    <table border="1">
+        <tr>
+            <th>Produkt</th>
+            <th>Ilość wydana</th>
+            <th>Wartość wydana</th>
+        </tr>
 
-    <p>Podsumowanie: {{ quant_total }} | {{ value_total }}</p>
+        {% for x in result %}
+            <tr>
+                <td><p align="left">{{ x.product }}</p></td>
+                <td><p align="center">{{ x.quant }} </p></td>
+                <td><p align="center">{{ x.value }} </p></td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>Razem</th>
+            <th>{{ quant_total }}</th>
+            <th>{{ value_total }}</th>
+        </tr>
+    </table>
+    <br>
 
-    <p>Wartości odżywcze w posiłku:</p>
+    <p>Wartości odżywcze w 1 posiłku (dwudaniowym):</p>
     <ul>
         <li><b>Kalorie:</b> {{ calories }} kcal | Real zapotrz.: <b>{{ cal_real }} %</b></li>
         <li><b>Białko:</b> {{ proteins }} g | Real zapotrz.: <b>{{ prot_real }} %</b></li>
+        <li><b>Tłuszcze ogólem:</b> {{ fat }} g | Real zapotrz.: <b>{{ fat_real }} %</b></li>
         <li><b>Węglowodany:</b> {{ carbo }} g | Real zapotrz.: <b>{{ carbo_real }} %</b></li>
         <li><b>Wapń:</b> {{ calcium }} mg | Real zapotrz.: <b>{{ calcium_real }} %</b></li>
         <li><b>Żelazo:</b> {{ iron }} mg | Real zapotrz.: <b>{{ iron_real }} %</b></li>

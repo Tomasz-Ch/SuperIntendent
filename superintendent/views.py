@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import UpdateView
@@ -159,7 +159,7 @@ class InvoiceView(View):
                                  )
             new_item.save()
             # form valid stop
-            return redirect('index')
+            return redirect('invoice')
         return render(request, 'invoice.html', {'form': form})
 
 
@@ -187,7 +187,7 @@ class UsedView(View):
                                  )
             new_item.save()
 
-            return redirect('obiady')
+            return redirect('used')
         return render(request, 'used.html', {'form': form})
 
 
@@ -241,16 +241,20 @@ class ReportView(View):
                 quant = quant + Decimal(e.quantity)
                 quant_total += e.quantity
                 value_total += Decimal(e.quantity) * e.price
-                sum_calories += e.quantity * int(Products.objects.get(id=e.product_id).calories * 1000 / 100 / meal_num)
-                sum_proteins += e.quantity * Products.objects.get(pk=e.product_id).protein * 1000 / 100 / meal_num
-                sum_fat += e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100 / meal_num
-                sum_carbo += e.quantity * Products.objects.get(pk=e.product_id).carbo * 1000 / 100 / meal_num
-                sum_calcium += e.quantity * Products.objects.get(pk=e.product_id).calcium * 1000 / 100 / meal_num
-                sum_iron += e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100 / meal_num
-                sum_vit_A += e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100 / meal_num
-                sum_vit_B1 += e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100 / meal_num
-                sum_vit_B2 += e.quantity * Products.objects.get(pk=e.product_id).vit_B2 * 1000 / 100 / meal_num
-                sum_vit_C += e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100 / meal_num
+                sum_calories += round(
+                    e.quantity * Products.objects.get(id=e.product_id).calories * 1000 / 100 / meal_num)
+                sum_proteins += round(
+                    e.quantity * Products.objects.get(pk=e.product_id).protein * 1000 / 100 / meal_num)
+                sum_fat += round(e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100 / meal_num)
+                sum_carbo += round(e.quantity * Products.objects.get(pk=e.product_id).carbo * 1000 / 100 / meal_num)
+                sum_calcium += round(e.quantity * Products.objects.get(pk=e.product_id).calcium * 1000 / 100 / meal_num)
+                sum_iron += round((e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100 / meal_num), 3)
+                sum_vit_A += round(e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100 / meal_num)
+                sum_vit_B1 += round((e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100 / meal_num),
+                                    3)
+                sum_vit_B2 += round((e.quantity * Products.objects.get(pk=e.product_id).vit_B2 * 1000 / 100 / meal_num),
+                                    3)
+                sum_vit_C += round(e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100 / meal_num)
             rv.append({
                 "value": value,
                 "product": product,
@@ -261,7 +265,7 @@ class ReportView(View):
         prot_norm = 28
         fat_norm = 27
         carbo_norm = 139
-        calcium_norm = 0.3
+        calcium_norm = 300
         iron_norm = 4.3
         vit_A_norm = 1520
         vit_B1_norm = 0.5
@@ -388,7 +392,7 @@ class ResetPasswordView(View):
     def post(self, request):
         form = PasswordResetForm(data=request.POST)
         if form.is_valid():
-            form.save(request=request, from_email='blabla@blabla.com')
+            form.save(request=request, from_email='misiu@lubimiodek.com.pl')
             return redirect('index')
         ctx = {'form': form}
         return render(request, 'reset_password.html', ctx)
@@ -404,7 +408,7 @@ def emailView(request):
             from_email = form.cleaned_data['from_email']
             message = form.cleaned_data['message']
             try:
-                send_mail(subject, message, from_email, ['admin@example.com'])
+                send_mail(subject, message, from_email, ['misiu@lubimiodek.com.pl'])
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect('success')
@@ -460,8 +464,6 @@ class InvReportView(View):
 
             quant_saldo = quant_in - quant_out
             value_saldo = value_in - value_out
-            quant_total_saldo = quant_total_in - quant_total_out
-            value_total_saldo = value_total_in - value_total_out
 
             rv.append({
                 "quant_in": quant_in,
@@ -472,7 +474,8 @@ class InvReportView(View):
                 "quant_saldo": quant_saldo,
                 "value_saldo": value_saldo
             })
-
+        quant_total_saldo = quant_total_in - quant_total_out
+        value_total_saldo = value_total_in - value_total_out
         ctx = {"result": rv,
                'quant_total_in': quant_total_in,
                'value_total_in': value_total_in,
@@ -513,3 +516,33 @@ class MealNumberView(View):
 
             return redirect('used')
         return render(request, 'meal_number.html', {'form': form})
+
+
+class DeleteProductView(View):
+
+    def get(self, request, id):
+        del_prod = get_object_or_404(Products, pk=id)
+        del_prod.delete()
+        return render(request, 'delete_product.html', {"del_prod": del_prod})
+
+
+import io
+from django.http import FileResponse, HttpResponse
+from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics, ttfonts
+
+
+def pdf_view(request):
+    buffer = io.BytesIO()
+
+    pdfmetrics.registerFont(ttfonts.TTFont('Arial', 'arial.ttf'))
+
+    pdf = canvas.Canvas(buffer, pagesize='A4')
+    pdf.setFont("Arial", 15)
+    pdf.drawString(40, 500, "Żółw - przykładowy Tekst")
+    pdf.showPage()
+    pdf.save()
+
+    response = HttpResponse(buffer.getvalue(), content_type="application/pdf")
+    response['Content-Disposition'] = 'attachment; filename="dokument.pdf"'
+    return response

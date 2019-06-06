@@ -4,7 +4,10 @@
     <h2>Produkty: </h2>
     <ul>
         {% for product in prod_list %}
-            <li> <a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a> |  <a href="{% url 'edit-product' product.pk %}">Edycja</a></li>
+            <li><a href="{% url 'product-detail' product.pk %}">{{ product.name }}</a> |
+                <a href="{% url 'edit-product' product.pk %}">Edycja</a> |
+                <a href="{% url 'delete-product' product.pk %}">Usuń</a>
+            </li>
         {% endfor %}
     </ul>
     <a href="{% url 'add-product' %}">Dodaj produkt</a>

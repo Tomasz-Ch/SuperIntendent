@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
     <a href="/"><p align="right">powrót do strony głównej</p></a>
-
+    <h1><p align="center">Raport magazynowy</p></h1>
     <p>Wybierz okres dla raportu:</p>
     <form action="{% url 'inv-report' %}" method="post">
 
@@ -43,4 +43,5 @@
     </table>
 
 
+    <a href="{}">Drukuj do PDF</a>
 {% endblock %}
