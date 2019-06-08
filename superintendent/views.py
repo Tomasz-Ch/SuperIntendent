@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.views import LogoutView
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordResetForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User
 from django.core.mail import send_mail, BadHeaderError
 from django.http import HttpResponse
@@ -21,7 +21,7 @@ class StartView(View):
         return render(request, "index.html")
 
 
-class SchoolUpdate(UpdateView):
+class SchoolUpdate(LoginRequiredMixin, UpdateView):
     model = School
     template_name = "school.html"
     form_class = SchoolModelForm
@@ -31,7 +31,7 @@ class SchoolUpdate(UpdateView):
         return reverse_lazy('index')
 
 
-class NewMenuView(View):
+class NewMenuView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = NewMenuForm()
@@ -50,7 +50,7 @@ class NewMenuView(View):
         return render(request, 'new_menu.html', {'form': form})
 
 
-class MenuView(View):
+class MenuView(LoginRequiredMixin, View):
     def get(self, request):
         menu = Menu.objects.all().order_by('date')
         ctx = {"menu": menu}
@@ -64,7 +64,7 @@ class SchoolView(View):
         return render(request, "base.html", ctx)
 
 
-class AllProductsView(View):
+class AllProductsView(LoginRequiredMixin, View):
 
     def get(self, request):
         prod_list = Products.objects.all().order_by('name')
@@ -72,7 +72,9 @@ class AllProductsView(View):
         return render(request, "all_products.html", ctx)
 
 
-class AddProductView(LoginRequiredMixin, View):
+class AddProductView(PermissionRequiredMixin, View):
+    permission_required = 'superintendent.add_student'
+
     def get(self, request):
         form = AddProductFormModel
         ctx = {"form": form}
@@ -116,7 +118,9 @@ class AddProductView(LoginRequiredMixin, View):
         return render(request, 'add_product.html', {'form': form})
 
 
-class ModifyProductUpdate(LoginRequiredMixin, UpdateView):
+class ModifyProductUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = 'superintendent.edit_student'
+
     model = Products
     template_name = "edit_product.html"
     form_class = ProductModelForm
@@ -126,7 +130,7 @@ class ModifyProductUpdate(LoginRequiredMixin, UpdateView):
         return reverse_lazy('all-products')
 
 
-class ProductView(View):
+class ProductView(LoginRequiredMixin, View):
     def get(self, request, product_id):
         product = Products.objects.get(pk=product_id)
         ctx = {
@@ -135,7 +139,7 @@ class ProductView(View):
         return render(request, "product.html", ctx)
 
 
-class InvoiceView(View):
+class InvoiceView(LoginRequiredMixin, View):
     def get(self, request):
         form = InvoiceForm()
         ctx = {"form": form}
@@ -163,7 +167,7 @@ class InvoiceView(View):
         return render(request, 'invoice.html', {'form': form})
 
 
-class UsedView(View):
+class UsedView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = UsedForm()
@@ -194,7 +198,7 @@ class UsedView(View):
 from decimal import Decimal
 
 
-class ReportView(View):
+class ReportView(LoginRequiredMixin, View):
     def get(self, request):
         # print(request.GET)
         # nastyhack
@@ -342,7 +346,7 @@ class MyLogoutView(LogoutView):
     next_page = reverse_lazy('index')
 
 
-class SearchProductView(View):
+class SearchProductView(LoginRequiredMixin, View):
     def get(self, request):
         form = SearchProductForm()
         ctx = {'form': form}
@@ -361,7 +365,7 @@ class SearchProductView(View):
         return render(request, "product_search.html", ctx)
 
 
-class AddUserView(View):
+class AddUserView(LoginRequiredMixin, View):
     def get(self, request):
         form = UserCreationForm()
         ctx = {'form': form}
@@ -419,7 +423,7 @@ def successView(request):
     return HttpResponse('Success! Thank you for your message.')
 
 
-class InvReportView(View):
+class InvReportView(LoginRequiredMixin, View):
     def get(self, request):
         # print(request.GET)
         start_date = request.GET.get('date_from', '2019-05-20')
@@ -498,7 +502,7 @@ class InvReportView(View):
         return render(request, 'inv_report.html', ctx)
 
 
-class MealNumberView(View):
+class MealNumberView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = MealNumberForm()
@@ -518,7 +522,7 @@ class MealNumberView(View):
         return render(request, 'meal_number.html', {'form': form})
 
 
-class DeleteProductView(View):
+class DeleteProductView(LoginRequiredMixin, View):
 
     def get(self, request, id):
         del_prod = get_object_or_404(Products, pk=id)
