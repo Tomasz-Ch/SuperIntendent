@@ -135,7 +135,6 @@ class ProductView(LoginRequiredMixin, View):
         product = Products.objects.get(pk=product_id)
 
         ctx = {
-            # "unit": "TMP KG FIXME TODO",
             "product": product,
         }
         return render(request, "product.html", ctx)
