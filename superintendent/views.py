@@ -133,7 +133,9 @@ class ModifyProductUpdate(PermissionRequiredMixin, UpdateView):
 class ProductView(LoginRequiredMixin, View):
     def get(self, request, product_id):
         product = Products.objects.get(pk=product_id)
+
         ctx = {
+            # "unit": "TMP KG FIXME TODO",
             "product": product,
         }
         return render(request, "product.html", ctx)
