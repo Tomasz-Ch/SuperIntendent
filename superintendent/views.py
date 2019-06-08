@@ -454,21 +454,21 @@ class InvReportView(LoginRequiredMixin, View):
             value_in = Decimal(0)
             quant_in = Decimal(0)
             for e in events_in:
-                value_in = value_in + Decimal(e.quantity) * e.price
-                quant_in = quant_in + Decimal(e.quantity)
-                quant_total_in += e.quantity
-                value_total_in += Decimal(e.quantity) * e.price
+                value_in = round(value_in + Decimal(e.quantity) * e.price, 2)
+                quant_in = round(quant_in + Decimal(e.quantity), 1)
+                quant_total_in += round(e.quantity, 1)
+                value_total_in += round(Decimal(e.quantity) * e.price, 2)
 
             value_out = Decimal(0)
             quant_out = Decimal(0)
             for e in events_out:
-                value_out = value_out + Decimal(e.quantity) * e.price
-                quant_out = quant_out + Decimal(e.quantity)
-                quant_total_out += e.quantity
-                value_total_out += Decimal(e.quantity) * e.price
+                value_out = round((value_out + Decimal(e.quantity) * e.price), 2)
+                quant_out = round((quant_out + Decimal(e.quantity)), 1)
+                quant_total_out += round(e.quantity, 1)
+                value_total_out += round(Decimal(e.quantity) * e.price, 2)
 
-            quant_saldo = quant_in - quant_out
-            value_saldo = value_in - value_out
+            quant_saldo = round(quant_in - quant_out, 1)
+            value_saldo = round(value_in - value_out, 2)
 
             rv.append({
                 "quant_in": quant_in,
@@ -479,8 +479,8 @@ class InvReportView(LoginRequiredMixin, View):
                 "quant_saldo": quant_saldo,
                 "value_saldo": value_saldo
             })
-        quant_total_saldo = quant_total_in - quant_total_out
-        value_total_saldo = value_total_in - value_total_out
+        quant_total_saldo = round(quant_total_in - quant_total_out, 1)
+        value_total_saldo = round(value_total_in - value_total_out, 2)
         ctx = {"result": rv,
                'quant_total_in': quant_total_in,
                'value_total_in': value_total_in,
