@@ -57,13 +57,6 @@ class MenuView(LoginRequiredMixin, View):
         return render(request, "menu.html", ctx)
 
 
-class SchoolView(View):
-    def get(self, request):
-        school = School.objects.get(pk=1)
-        ctx = {"school": school}
-        return render(request, "base.html", ctx)
-
-
 class AllProductsView(LoginRequiredMixin, View):
 
     def get(self, request):
@@ -242,10 +235,10 @@ class ReportView(LoginRequiredMixin, View):
             quant = Decimal(0)
 
             for e in events:
-                value = value + Decimal(e.quantity) * e.price
-                quant = quant + Decimal(e.quantity)
-                quant_total += e.quantity
-                value_total += Decimal(e.quantity) * e.price
+                value = round(value + Decimal(e.quantity) * e.price, 2)
+                quant = round(quant + Decimal(e.quantity), 1)
+                quant_total += round(e.quantity, 1)
+                value_total += round(Decimal(e.quantity) * e.price, 2)
                 sum_calories += round(
                     e.quantity * Products.objects.get(id=e.product_id).calories * 1000 / 100 / meal_num)
                 sum_proteins += round(
@@ -253,13 +246,13 @@ class ReportView(LoginRequiredMixin, View):
                 sum_fat += round(e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100 / meal_num)
                 sum_carbo += round(e.quantity * Products.objects.get(pk=e.product_id).carbo * 1000 / 100 / meal_num)
                 sum_calcium += round(e.quantity * Products.objects.get(pk=e.product_id).calcium * 1000 / 100 / meal_num)
-                sum_iron += round((e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100 / meal_num), 3)
-                sum_vit_A += round(e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100 / meal_num)
-                sum_vit_B1 += round((e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100 / meal_num),
-                                    3)
+                sum_iron += round((e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100 / meal_num), 4)
+                sum_vit_A += round((e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100 / meal_num), 3)
+                sum_vit_B1 += round(e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100 / meal_num,
+                                    4)
                 sum_vit_B2 += round((e.quantity * Products.objects.get(pk=e.product_id).vit_B2 * 1000 / 100 / meal_num),
                                     3)
-                sum_vit_C += round(e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100 / meal_num)
+                sum_vit_C += round((e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100 / meal_num), 1)
             rv.append({
                 "value": value,
                 "product": product,
@@ -427,7 +420,7 @@ def successView(request):
 class InvReportView(LoginRequiredMixin, View):
     def get(self, request):
         # print(request.GET)
-        start_date = request.GET.get('date_from', '2019-05-20')
+        start_date = request.GET.get('date_from', '2100-05-20')
         end_date = request.GET.get('date_to', start_date)
         # print(start_date, end_date)
 
@@ -482,6 +475,7 @@ class InvReportView(LoginRequiredMixin, View):
         quant_total_saldo = round(quant_total_in - quant_total_out, 1)
         value_total_saldo = round(value_total_in - value_total_out, 2)
         ctx = {"result": rv,
+               "form": DateForm(),
                'quant_total_in': quant_total_in,
                'value_total_in': value_total_in,
                'quant_total_out': quant_total_out,
@@ -525,8 +519,8 @@ class MealNumberView(LoginRequiredMixin, View):
 
 class DeleteProductView(LoginRequiredMixin, View):
 
-    def get(self, request, id):
-        del_prod = get_object_or_404(Products, pk=id)
+    def get(self, request, product_id):
+        del_prod = get_object_or_404(Products, pk=product_id)
         del_prod.delete()
         return render(request, 'delete_product.html', {"del_prod": del_prod})
 
