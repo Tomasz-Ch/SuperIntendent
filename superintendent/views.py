@@ -246,13 +246,14 @@ class ReportView(LoginRequiredMixin, View):
                 sum_fat += round(e.quantity * Products.objects.get(pk=e.product_id).fat * 1000 / 100 / meal_num)
                 sum_carbo += round(e.quantity * Products.objects.get(pk=e.product_id).carbo * 1000 / 100 / meal_num)
                 sum_calcium += round(e.quantity * Products.objects.get(pk=e.product_id).calcium * 1000 / 100 / meal_num)
-                sum_iron += round((e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100 / meal_num), 4)
-                sum_vit_A += round((e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100 / meal_num), 3)
+                sum_iron += round((e.quantity * Products.objects.get(pk=e.product_id).iron * 1000 / 100 / meal_num))
+                sum_vit_A += round((e.quantity * Products.objects.get(pk=e.product_id).vit_A * 1000 / 100 / meal_num))
                 sum_vit_B1 += round(e.quantity * Products.objects.get(pk=e.product_id).vit_B1 * 1000 / 100 / meal_num,
                                     4)
                 sum_vit_B2 += round((e.quantity * Products.objects.get(pk=e.product_id).vit_B2 * 1000 / 100 / meal_num),
                                     3)
-                sum_vit_C += round((e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100 / meal_num), 1)
+                sum_vit_C += round((e.quantity * Products.objects.get(pk=e.product_id).vit_C * 1000 / 100 / meal_num),
+                                   1)
             rv.append({
                 "value": value,
                 "product": product,
@@ -523,25 +524,3 @@ class DeleteProductView(LoginRequiredMixin, View):
         del_prod = get_object_or_404(Products, pk=product_id)
         del_prod.delete()
         return render(request, 'delete_product.html', {"del_prod": del_prod})
-
-
-import io
-from django.http import FileResponse, HttpResponse
-from reportlab.pdfgen import canvas
-from reportlab.pdfbase import pdfmetrics, ttfonts
-
-
-def pdf_view(request):
-    buffer = io.BytesIO()
-
-    pdfmetrics.registerFont(ttfonts.TTFont('Arial', 'arial.ttf'))
-
-    pdf = canvas.Canvas(buffer, pagesize='A4')
-    pdf.setFont("Arial", 15)
-    pdf.drawString(40, 500, "Żółw - przykładowy Tekst")
-    pdf.showPage()
-    pdf.save()
-
-    response = HttpResponse(buffer.getvalue(), content_type="application/pdf")
-    response['Content-Disposition'] = 'attachment; filename="dokument.pdf"'
-    return response
