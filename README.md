@@ -1,6 +1,6 @@
 # SuperIntendent
 
-##Cele projektu:
+## Cele projektu:
 1. Zautomatyzowanie raportowania dziennego ("Raport żywnościowy") i miesięcznego ("Raport magazynowy").
 2. Wyliczenie realizacji norm wartości odżywczych przygotowywanych posiłków szkolnych. 
 3. Digitalizacja kartotek magazynowych (dotychczas w formie papierowej). 
