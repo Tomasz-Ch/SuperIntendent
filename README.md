@@ -12,3 +12,6 @@
 - baza przykładowych 44 produktów do przygotowywania popularnych posiłków,
 - przykładowy obiad dwudaniowy przygotowany dla 100 osób (dla łatwego sprawdzenia poprawności kalkulacji wartości odżywczych),
 - 2 rodzaje dostępów z różnymi uprawnieniami po zalogowaniu.
+
+## Strona główna
+<p align="center"><img src="static/Kubus_puchatek.jpg" alt="Kubuś Puchatek" width="330" height="330"></p>
